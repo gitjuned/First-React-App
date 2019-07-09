@@ -29,23 +29,18 @@ class App extends Component {
     this.setState({ nameData: [...this.state.nameData.filter(data => data.id !== id)] });
   }
 
-  submitHandler = (e) => {
+  submitHandler = (e, state, ctx) => {
     e.preventDefault()
-    console.log("clicked submit")
+    console.log("ctx", ctx);
+    console.log("clicked submit this.state", state)
 
     if ((e.target.elements.fname.value === "") || (e.target.elements.lname.value === "")) {
       alert("all fields are compulsory");
-      e.target.elements.fname.value = "";
-      e.target.elements.lname.value = "";
     }
     else {
-
-      const firstName = e.target.elements.fname.value.toLowerCase();
-      const lastName = e.target.elements.lname.value.toLowerCase();
-
       let validation = this.state.nameData.every((element) => {
 
-        if ((element.fname === firstName) && (element.lname === lastName)) {
+        if ((element.fname === state.fname.toLowerCase()) && (element.lname === state.lname.toLowerCase())) {
           return false
         }
         else {
@@ -55,15 +50,22 @@ class App extends Component {
 
       if (validation) {
         this.setState({
-          nameData: [...this.state.nameData, { id: this.state.nameData.length + 1, fname: firstName, lname: lastName }],
+          nameData: [...this.state.nameData, { id: this.state.nameData.length + 1, fname: state.fname, lname: state.lname }],
           error: false
         });
+        ctx.setState({
+          fname: "",
+          lname: ""
+        })
       }
       else {
         this.setState({ error: true })
+        ctx.setState({
+          fname: "",
+          lname: ""
+        })
       }
-      e.target.elements.fname.value = "";
-      e.target.elements.lname.value = "";
+
     }
 
 
